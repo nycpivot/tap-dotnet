@@ -1,7 +1,10 @@
 using App.Metrics;
 using App.Metrics.Reporting.Wavefront.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Net;
 using Tap.Dotnet.Common.Interfaces;
 using Wavefront.SDK.CSharp.Common;
 using Wavefront.SDK.CSharp.Common.Application;
@@ -22,17 +25,42 @@ namespace Tap.Dotnet.Api.Weather.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        [Route("{zipCode}")]
+        public IEnumerable<WeatherForecast> Get(string zipCode)
         {
+            var forecast = new List<WeatherForecast>();
+
             var start = DateTimeUtils.UnixTimeMilliseconds(DateTime.UtcNow);
 
-            var forecast = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            using (var handler = new HttpClientHandler())
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                //Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+                {
+                    return true;
+                };
+
+                using (var httpClient = new HttpClient(handler))
+                {
+                    httpClient.BaseAddress = new Uri(this.apiHelper.WeatherBitUrl);
+
+                    var key = this.apiHelper.WeatherBitKey;
+
+                    var response = httpClient.GetAsync($"forecast/daily?postal_code={zipCode}&key={key}").Result;
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        var content = response.Content.ReadAsStringAsync().Result;
+                        forecast = JsonConvert.DeserializeObject<List<WeatherForecast>>(content);
+                    }
+                }
+            }
+
+            //var forecast = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            //{
+            //    Date = DateTime.Now.AddDays(index),
+            //    TemperatureC = Random.Shared.Next(-20, 55),
+            //    //Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            //})
+            //.ToArray();
 
             var min = Convert.ToDouble(forecast.Min(t => t.TemperatureC));
             var max = Convert.ToDouble(forecast.Max(t => t.TemperatureC));

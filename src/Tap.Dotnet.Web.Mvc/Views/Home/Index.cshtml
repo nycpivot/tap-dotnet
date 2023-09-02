@@ -10,9 +10,14 @@
         @Html.ValidationMessageFor(model => model.ZipCode)
         <button type="submit">Get Forecast</button>
     }
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
     <div class="container">
         <div class="text-center border-top">
-            <h6 class="display-6">Weather Forecast</h6>
+            <h6 class="display-6">5-day Forecast</h6>
             <table style="width:100%;">
                 <tr>
                     <td>@Model.WeatherForecast[0].Date.DayOfWeek</td>

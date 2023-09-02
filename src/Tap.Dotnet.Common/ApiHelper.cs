@@ -6,6 +6,8 @@ namespace Tap.Dotnet.Common
 {
     public class ApiHelper : IApiHelper
     {
+        public string WeatherBitUrl { get; set; } = String.Empty;
+        public string WeatherBitKey { get; set; } = String.Empty;
         public string DefaultZipCode { get; set; } = String.Empty;
 
         public string WeatherApiUrl { get; set; } = String.Empty;

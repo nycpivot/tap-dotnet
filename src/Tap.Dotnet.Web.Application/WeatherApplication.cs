@@ -48,13 +48,12 @@ namespace Tap.Dotnet.Web.Application
                     using (var httpClient = new HttpClient(handler))
                     {
                         httpClient.BaseAddress = new Uri(this.apiHelper.WeatherApiUrl);
-
                         httpClient.DefaultRequestHeaders.Add("X-TraceId", traceId.ToString());
 
                         //var response = await httpClient.GetAsync("weatherforecast");
                         //response.EnsureSuccessStatusCode();
 
-                        var response = httpClient.GetAsync("forecast").Result;
+                        var response = httpClient.GetAsync($"forecast/{zipCode}").Result;
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
                             var content = response.Content.ReadAsStringAsync().Result;
