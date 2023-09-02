@@ -31,11 +31,11 @@ namespace Tap.Dotnet.Web.Application
                 var spanId = Guid.NewGuid();
 
                 this.apiHelper.WavefrontSender.SendSpan(
-                    "Get", 0, 1, "ClaimController", traceId, spanId,
+                    "Get", 0, 1, "ForecastController", traceId, spanId,
                     ImmutableList.Create(new Guid("82dd7b10-3d65-4a03-9226-24ff106b5041")), null,
                     ImmutableList.Create(
-                        new KeyValuePair<string, string>("application", "tap-dotnet-core-web-mvc-claim"),
-                        new KeyValuePair<string, string>("service", "ClaimController"),
+                        new KeyValuePair<string, string>("application", "tap-dotnet-web-mvc"),
+                        new KeyValuePair<string, string>("service", "GetWeather"),
                         new KeyValuePair<string, string>("http.method", "GET")), null);
 
                 using (var handler = new HttpClientHandler())

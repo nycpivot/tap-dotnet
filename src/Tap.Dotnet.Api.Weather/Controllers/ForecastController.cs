@@ -114,14 +114,14 @@ namespace Tap.Dotnet.Api.Weather.Controllers
 
             var traceHeader = this.Request.Headers["X-TraceId"];
 
-            this.apiHelper.WavefrontSender.SendSpan(
-                "GetWeatherForecast", start, end, "ForecastController",
-                new Guid(traceHeader[0]), Guid.NewGuid(),
-                ImmutableList.Create(new Guid("82dd7b10-3d65-4a03-9226-24ff106b5041")), null,
-                ImmutableList.Create(
-                    new KeyValuePair<string, string>("application", "tap-dotnet-api-weather"),
-                    new KeyValuePair<string, string>("service", "ForecastController"),
-                    new KeyValuePair<string, string>("http.method", "GET")), null);
+            //this.apiHelper.WavefrontSender.SendSpan(
+            //    "GetWeatherForecast", start, end, "ForecastController",
+            //    new Guid(traceHeader[0]), Guid.NewGuid(),
+            //    ImmutableList.Create(new Guid("82dd7b10-3d65-4a03-9226-24ff106b5041")), null,
+            //    ImmutableList.Create(
+            //        new KeyValuePair<string, string>("application", "tap-dotnet-api-weather"),
+            //        new KeyValuePair<string, string>("service", "ForecastController"),
+            //        new KeyValuePair<string, string>("http.method", "GET")), null);
 
             return weatherInfo;
         }
