@@ -1,0 +1,41 @@
+﻿@model Tap.Dotnet.Web.Application.Models.HomeViewModel
+
+<p>@Html.ValidationMessage("Index")</p>
+
+<div class="text-center">
+    <h1 class="display-4">Weather Watch</h1>
+    @using (Html.BeginForm("Search", "Home", FormMethod.Post))
+    {
+        @Html.TextBoxFor(model => model.ZipCode)
+        @Html.ValidationMessageFor(model => model.ZipCode)
+        <button type="submit">Get Forecast</button>
+    }
+    <div class="container">
+        <div class="text-center border-top">
+            <h6 class="display-6">Weather Forecast</h6>
+            <table style="width:100%;">
+                <tr>
+                    <td>@Model.WeatherForecast[0].Date.DayOfWeek</td>
+                    <td>@Model.WeatherForecast[1].Date.DayOfWeek</td>
+                    <td>@Model.WeatherForecast[2].Date.DayOfWeek</td>
+                    <td>@Model.WeatherForecast[3].Date.DayOfWeek</td>
+                    <td>@Model.WeatherForecast[4].Date.DayOfWeek</td>
+                </tr>
+                <tr>
+                    <td>@Model.WeatherForecast[0].TemperatureF℉</td>
+                    <td>@Model.WeatherForecast[1].TemperatureF℉</td>
+                    <td>@Model.WeatherForecast[2].TemperatureF℉</td>
+                    <td>@Model.WeatherForecast[3].TemperatureF℉</td>
+                    <td>@Model.WeatherForecast[4].TemperatureF℉</td>
+                </tr>
+                <tr>
+                    <td>@Model.WeatherForecast[0].Summary</td>
+                    <td>@Model.WeatherForecast[1].Summary</td>
+                    <td>@Model.WeatherForecast[2].Summary</td>
+                    <td>@Model.WeatherForecast[3].Summary</td>
+                    <td>@Model.WeatherForecast[4].Summary</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
