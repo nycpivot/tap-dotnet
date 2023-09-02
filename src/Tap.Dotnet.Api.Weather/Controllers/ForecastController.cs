@@ -3,11 +3,12 @@ using App.Metrics.Reporting.Wavefront.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Net;
 using Tap.Dotnet.Common.Interfaces;
+using Tap.Dotnet.Domain;
 using Wavefront.SDK.CSharp.Common;
 using Wavefront.SDK.CSharp.Common.Application;
+using WeatherBit.Domain;
 
 namespace Tap.Dotnet.Api.Weather.Controllers
 {
@@ -26,9 +27,9 @@ namespace Tap.Dotnet.Api.Weather.Controllers
 
         [HttpGet]
         [Route("{zipCode}")]
-        public IEnumerable<WeatherForecast> Get(string zipCode)
+        public WeatherInfo Get(string zipCode)
         {
-            var forecast = new List<WeatherForecast>();
+            var weatherInfo = new WeatherInfo();
 
             var start = DateTimeUtils.UnixTimeMilliseconds(DateTime.UtcNow);
 
@@ -49,7 +50,28 @@ namespace Tap.Dotnet.Api.Weather.Controllers
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         var content = response.Content.ReadAsStringAsync().Result;
-                        forecast = JsonConvert.DeserializeObject<List<WeatherForecast>>(content);
+
+                        var serializerSettings = new JsonSerializerSettings();
+                        serializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                        
+                        var weatherBitInfo = JsonConvert.DeserializeObject<WeatherBitInfo>(content, serializerSettings);
+
+                        weatherInfo.CityName = weatherBitInfo.city_name;
+                        weatherInfo.StateCode = weatherBitInfo.state_code;
+                        weatherInfo.CountryCode = weatherBitInfo.country_code;
+                        weatherInfo.Latitude = weatherBitInfo.lat;
+                        weatherInfo.Longitude = weatherBitInfo.lon;
+                        weatherInfo.TimeZone = weatherBitInfo.timezone;
+
+                        foreach(var weatherBitForecast in weatherBitInfo.data)
+                        {
+                            var weatherForecast = new WeatherForecast();
+                            weatherForecast.Date = Convert.ToDateTime(weatherBitForecast.datetime);
+                            weatherForecast.TemperatureC = Convert.ToSingle(weatherBitForecast.temp);
+                            weatherForecast.Description = weatherBitForecast.weather.description;
+
+                            weatherInfo.Forecast.Add(weatherForecast);
+                        }
                     }
                 }
             }
@@ -62,20 +84,20 @@ namespace Tap.Dotnet.Api.Weather.Controllers
             //})
             //.ToArray();
 
-            var min = Convert.ToDouble(forecast.Min(t => t.TemperatureC));
-            var max = Convert.ToDouble(forecast.Max(t => t.TemperatureC));
+            var min = Convert.ToDouble(weatherInfo.Forecast.Min(t => t.TemperatureC));
+            var max = Convert.ToDouble(weatherInfo.Forecast.Max(t => t.TemperatureC));
             var tags = new Dictionary<string, string>();
 
             tags.Add("DeploymentType", "Environment");
 
             // save as storage in wavefront
             this.apiHelper.WavefrontSender.SendMetric("MinimumRandomForecast", min,
-                DateTimeUtils.UnixTimeMilliseconds(DateTime.UtcNow), "tap-dotnet-core-api-weather-env", tags);
+                DateTimeUtils.UnixTimeMilliseconds(DateTime.UtcNow), "tap-dotnet-api-weather-env", tags);
             this.apiHelper.WavefrontSender.SendMetric("MaximumRandomForecast", max,
-                DateTimeUtils.UnixTimeMilliseconds(DateTime.UtcNow), "tap-dotnet-core-api-weather-env", tags);
+                DateTimeUtils.UnixTimeMilliseconds(DateTime.UtcNow), "tap-dotnet-api-weather-env", tags);
 
             // report metrics
-            var applicationTags = new ApplicationTags.Builder("tap-dotnet-core-api-weather-env", "random-forecast-controller").Build();
+            var applicationTags = new ApplicationTags.Builder("tap-dotnet-api-weather-env", "forecast-controller").Build();
 
             var metricsBuilder = new MetricsBuilder();
 
@@ -83,7 +105,7 @@ namespace Tap.Dotnet.Api.Weather.Controllers
               options =>
               {
                   options.WavefrontSender = this.apiHelper.WavefrontSender;
-                  options.Source = "tap-dotnet-core-api-weather-env"; // optional
+                  options.Source = "tap-dotnet-api-weather"; // optional
                   options.WavefrontHistogram.ReportMinuteDistribution = true; // optional
                   options.ApplicationTags = applicationTags;
               });
@@ -93,15 +115,15 @@ namespace Tap.Dotnet.Api.Weather.Controllers
             var traceHeader = this.Request.Headers["X-TraceId"];
 
             this.apiHelper.WavefrontSender.SendSpan(
-                "GetRandomWeatherForecast", start, end, "RandomForecastController",
+                "GetWeatherForecast", start, end, "ForecastController",
                 new Guid(traceHeader[0]), Guid.NewGuid(),
                 ImmutableList.Create(new Guid("82dd7b10-3d65-4a03-9226-24ff106b5041")), null,
                 ImmutableList.Create(
-                    new KeyValuePair<string, string>("application", "tap-dotnet-core-api-weather-claim"),
-                    new KeyValuePair<string, string>("service", "RandomForecastController"),
+                    new KeyValuePair<string, string>("application", "tap-dotnet-api-weather"),
+                    new KeyValuePair<string, string>("service", "ForecastController"),
                     new KeyValuePair<string, string>("http.method", "GET")), null);
 
-            return forecast;
+            return weatherInfo;
         }
     }
 }

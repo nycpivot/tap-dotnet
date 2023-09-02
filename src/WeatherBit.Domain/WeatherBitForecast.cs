@@ -1,4 +1,4 @@
-﻿namespace Tap.Dotnet.Domain
+﻿namespace WeatherBit.Domain
 {
     public class WeatherBitForecast
     {
@@ -10,5 +10,7 @@
         public string snow_depth { get; set; } = String.Empty;
         public string sunrise_ts { get; set; } = String.Empty;
         public string sunset_ts { get; set; } = String.Empty;
+
+        public WeatherBitDescription weather { get; set; } = new WeatherBitDescription();
     }
 }

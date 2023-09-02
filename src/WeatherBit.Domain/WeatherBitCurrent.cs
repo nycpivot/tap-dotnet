@@ -1,4 +1,4 @@
-﻿namespace Tap.Dotnet.Domain
+﻿namespace WeatherBit.Domain
 {
     public class WeatherBitCurrent
     {
