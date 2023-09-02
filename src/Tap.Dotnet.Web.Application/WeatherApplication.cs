@@ -21,9 +21,9 @@ namespace Tap.Dotnet.Web.Application
             return new HomeViewModel() { ZipCode = this.apiHelper.DefaultZipCode };
         }
 
-        public IList<WeatherForecastViewModel> GetForecast(string zipCode)
+        public WeatherInfoViewModel GetWeather(string zipCode)
         {
-            var forecast = new List<WeatherForecastViewModel>();
+            var weatherInfo = new WeatherInfoViewModel();
 
             try
             {
@@ -50,14 +50,11 @@ namespace Tap.Dotnet.Web.Application
                         httpClient.BaseAddress = new Uri(this.apiHelper.WeatherApiUrl);
                         httpClient.DefaultRequestHeaders.Add("X-TraceId", traceId.ToString());
 
-                        //var response = await httpClient.GetAsync("weatherforecast");
-                        //response.EnsureSuccessStatusCode();
-
                         var response = httpClient.GetAsync($"forecast/{zipCode}").Result;
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
                             var content = response.Content.ReadAsStringAsync().Result;
-                            forecast = JsonConvert.DeserializeObject<List<WeatherForecastViewModel>>(content);
+                            weatherInfo = JsonConvert.DeserializeObject<WeatherInfoViewModel>(content);
                         }
                     }
                 }
@@ -67,7 +64,7 @@ namespace Tap.Dotnet.Web.Application
 
             }
 
-            return forecast;
+            return weatherInfo;
         }
     }
 }

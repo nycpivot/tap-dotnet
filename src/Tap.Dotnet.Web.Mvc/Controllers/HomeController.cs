@@ -28,15 +28,18 @@ namespace Tap.Dotnet.Web.Mvc.Controllers
 
             try
             {
-                var forecast = this.weatherApplication.GetForecast(homeViewModel.ZipCode);
+                var weatherInfoViewModel = this.weatherApplication.GetWeather(homeViewModel.ZipCode);
 
-                if (forecast != null && forecast.Count == 5)
+                if (weatherInfoViewModel != null)
                 {
-                    homeViewModel.WeatherForecast.Add(forecast[0]);
-                    homeViewModel.WeatherForecast.Add(forecast[1]);
-                    homeViewModel.WeatherForecast.Add(forecast[2]);
-                    homeViewModel.WeatherForecast.Add(forecast[3]);
-                    homeViewModel.WeatherForecast.Add(forecast[4]);
+                    if (weatherInfoViewModel.Forecast != null && weatherInfoViewModel.Forecast.Count == 5)
+                    {
+                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[0]);
+                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[1]);
+                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[2]);
+                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[3]);
+                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[4]);
+                    }
                 }
             }
             catch (Exception ex)
