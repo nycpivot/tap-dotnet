@@ -23,15 +23,13 @@ namespace Tap.Dotnet.Web.Mvc.Controllers
             this.logger = logger;
         }
 
-        public IActionResult Index(WeatherInfoViewModel model = null)
+        public IActionResult Index(WeatherInfoViewModel model)
         {
             var weatherInfoViewModel = new WeatherInfoViewModel();
 
-            var zipCode = this.weatherApplication.GetDefaultCriteria().ZipCode;
-
             try
             {
-                weatherInfoViewModel = this.weatherApplication.GetWeather(zipCode);
+                weatherInfoViewModel = this.weatherApplication.GetWeather(model.ZipCode);
             }
             catch (Exception ex)
             {

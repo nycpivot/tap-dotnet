@@ -10,27 +10,27 @@ var builder = WebApplication.CreateBuilder(args);
 var serviceBindings = Environment.GetEnvironmentVariable("SERVICE_BINDING_ROOT") ?? String.Empty;
 
 // read environment variables
-var weatherApi = Environment.GetEnvironmentVariable("WEATHER_API") ?? String.Empty;
+var weatherApi = "https://tap-dotnet-api-weather.default.run-aks.tap.nycpivot.com"; // Environment.GetEnvironmentVariable("WEATHER_API") ?? String.Empty;
 
 // read secrets from files
-var wavefrontUrl = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "wavefront-api", "host"));
-var wavefrontToken = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "wavefront-api", "token"));
-var cacheHost = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "cache-config", "host"));
-var cachePort = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "cache-config", "port"));
-var cachePassword = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "cache-config", "password"));
+//var wavefrontUrl = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "wavefront-api", "host"));
+//var wavefrontToken = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "wavefront-api", "token"));
+//var cacheHost = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "cache-config", "host"));
+//var cachePort = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "cache-config", "port"));
+//var cachePassword = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "cache-config", "password"));
 
-var cacheConfig = $"{cacheHost}:{cachePort},password={cachePassword}";
+//var cacheConfig = $"{cacheHost}:{cachePort},password={cachePassword}";
 
-var wfSender = new WavefrontDirectIngestionClient.Builder(wavefrontUrl, wavefrontToken).Build();
+//var wfSender = new WavefrontDirectIngestionClient.Builder(wavefrontUrl, wavefrontToken).Build();
 
-var redisConnection = ConnectionMultiplexer.Connect(cacheConfig);
-var cacheDb = redisConnection.GetDatabase();
+//var redisConnection = ConnectionMultiplexer.Connect(cacheConfig);
+//var cacheDb = redisConnection.GetDatabase();
 
 var apiHelper = new ApiHelper()
 {
     WeatherApiUrl = weatherApi,
-    WavefrontSender = wfSender,
-    CacheDb = cacheDb
+    //WavefrontSender = wfSender,
+    //CacheDb = cacheDb
 };
 
 builder.Services.AddSingleton<IApiHelper>(apiHelper);

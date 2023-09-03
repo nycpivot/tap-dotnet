@@ -16,19 +16,9 @@ namespace Tap.Dotnet.Web.Application
             this.apiHelper = apiHelper;
         }
 
-        public HomeViewModel GetDefaultCriteria()
-        {
-            return new HomeViewModel() { ZipCode = this.apiHelper.DefaultZipCode };
-        }
-
         public WeatherInfoViewModel GetWeather(string zipCode)
         {
             var weatherInfo = new WeatherInfoViewModel();
-
-            if(String.IsNullOrWhiteSpace(zipCode))
-            {
-                zipCode = GetDefaultCriteria().ZipCode;
-            }
 
             try
             {

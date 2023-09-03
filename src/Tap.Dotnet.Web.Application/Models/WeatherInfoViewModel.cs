@@ -2,7 +2,7 @@
 {
     public class WeatherInfoViewModel
     {
-        public string ZipCode { get; set; } = "10001";
+        public string ZipCode { get; set; } = "94301"; // Palo Alto
         public string CityName { get; set; } = String.Empty;
         public string StateCode { get; set; } = String.Empty;
         public string CountryCode { get; set; } = String.Empty;
