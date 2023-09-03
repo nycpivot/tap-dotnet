@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tap.Dotnet.Domain", "Tap.Do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBit.Domain", "WeatherBit.Domain\WeatherBit.Domain.csproj", "{1016069E-9373-45D4-B38F-90AE9B26B547}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tap.Dotnet.Api.Data", "Tap.Dotnet.Api.Data\Tap.Dotnet.Api.Data.csproj", "{9B56256D-6284-414B-8F86-091EE22EF190}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{1016069E-9373-45D4-B38F-90AE9B26B547}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1016069E-9373-45D4-B38F-90AE9B26B547}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1016069E-9373-45D4-B38F-90AE9B26B547}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B56256D-6284-414B-8F86-091EE22EF190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B56256D-6284-414B-8F86-091EE22EF190}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B56256D-6284-414B-8F86-091EE22EF190}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B56256D-6284-414B-8F86-091EE22EF190}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

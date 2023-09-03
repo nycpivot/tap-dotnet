@@ -7,12 +7,12 @@
     @using (Html.BeginForm("Search", "Home", FormMethod.Post))
     {
         @Html.TextBoxFor(model => model.ZipCode)
-        @Html.ValidationMessageFor(model => model.ZipCode)
         <button type="submit">Get Forecast</button>
+        <br />
+        <br />
+        <h3>@Model.CityName, @Model.StateCode @Model.CountryCode</h3>
+        <button type="submit">Add To Favorites</button>
     }
-    <br />
-    <br />
-    <h3>@Model.CityName, @Model.StateCode @Model.CountryCode</h3>
     <br />
     <br />
     <div class="container">

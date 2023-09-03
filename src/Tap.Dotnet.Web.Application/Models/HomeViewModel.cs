@@ -2,6 +2,6 @@
 {
     public class HomeViewModel
     {
-        public string ZipCode { get; set; } = String.Empty;
+        public IList<FavoriteViewModel> Favorites { get; set; } = new List<FavoriteViewModel>();
     }
 }

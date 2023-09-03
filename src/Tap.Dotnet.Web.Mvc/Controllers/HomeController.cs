@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Reflection.Emit;
 using Tap.Dotnet.Common.Interfaces;
 using Tap.Dotnet.Web.Application.Interfaces;
 using Tap.Dotnet.Web.Application.Models;
@@ -27,20 +26,28 @@ namespace Tap.Dotnet.Web.Mvc.Controllers
         {
             var weatherInfoViewModel = new WeatherInfoViewModel();
 
-            try
-            {
-                weatherInfoViewModel = this.weatherApplication.GetWeather(model.ZipCode);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("Index", ex.StackTrace ?? ex.Message);
-            }
+            ViewBag.Favorites = this.weatherApplication.GetFavorites();
+            
+            weatherInfoViewModel = this.weatherApplication.GetWeather(model.ZipCode);
 
             return View(weatherInfoViewModel);
         }
 
         [HttpPost]
         public ActionResult Search(WeatherInfoViewModel model)
+        {
+            var weatherInfoViewModel = new WeatherInfoViewModel();
+
+            if (ModelState.IsValid)
+            {
+                weatherInfoViewModel = this.weatherApplication.GetWeather(model.ZipCode);
+            }
+
+            return View("Index", weatherInfoViewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Save(WeatherInfoViewModel model)
         {
             var weatherInfoViewModel = new WeatherInfoViewModel();
 

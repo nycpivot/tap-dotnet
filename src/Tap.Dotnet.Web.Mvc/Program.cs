@@ -1,4 +1,6 @@
 using StackExchange.Redis;
+using System.Diagnostics;
+using System.Net.Security;
 using Tap.Dotnet.Common;
 using Tap.Dotnet.Common.Interfaces;
 using Tap.Dotnet.Web.Application;
@@ -10,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var serviceBindings = Environment.GetEnvironmentVariable("SERVICE_BINDING_ROOT") ?? String.Empty;
 
 // read environment variables
-var weatherApi = "https://tap-dotnet-api-weather.default.run-aks.tap.nycpivot.com"; // Environment.GetEnvironmentVariable("WEATHER_API") ?? String.Empty;
+var weatherApi = Environment.GetEnvironmentVariable("WEATHER_API") ?? String.Empty;
 
 // read secrets from files
 //var wavefrontUrl = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "wavefront-api", "host"));
@@ -28,7 +30,7 @@ var weatherApi = "https://tap-dotnet-api-weather.default.run-aks.tap.nycpivot.co
 
 var apiHelper = new ApiHelper()
 {
-    WeatherApiUrl = weatherApi,
+    WeatherApi = weatherApi,
     //WavefrontSender = wfSender,
     //CacheDb = cacheDb
 };
