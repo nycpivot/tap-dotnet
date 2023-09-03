@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tap.Dotnet.Api.Data.Contexts;
 using Tap.Dotnet.Domain;
 using Wavefront.SDK.CSharp.Common;
 

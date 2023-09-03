@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Tap.Dotnet.Api.Data.Contexts;
+using Tap.Dotnet.Api.Data;
 using Wavefront.SDK.CSharp.Common;
 using Wavefront.SDK.CSharp.DirectIngestion;
 
