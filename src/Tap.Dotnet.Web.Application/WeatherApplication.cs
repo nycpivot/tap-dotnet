@@ -25,18 +25,23 @@ namespace Tap.Dotnet.Web.Application
         {
             var weatherInfo = new WeatherInfoViewModel();
 
+            if(String.IsNullOrWhiteSpace(zipCode))
+            {
+                zipCode = GetDefaultCriteria().ZipCode;
+            }
+
             try
             {
                 var traceId = Guid.NewGuid();
                 var spanId = Guid.NewGuid();
 
-                this.apiHelper.WavefrontSender.SendSpan(
-                    "Get", 0, 1, "ForecastController", traceId, spanId,
-                    ImmutableList.Create(new Guid("82dd7b10-3d65-4a03-9226-24ff106b5041")), null,
-                    ImmutableList.Create(
-                        new KeyValuePair<string, string>("application", "tap-dotnet-web-mvc"),
-                        new KeyValuePair<string, string>("service", "GetWeather"),
-                        new KeyValuePair<string, string>("http.method", "GET")), null);
+                //this.apiHelper.WavefrontSender.SendSpan(
+                //    "Get", 0, 1, "ForecastController", traceId, spanId,
+                //    ImmutableList.Create(new Guid("82dd7b10-3d65-4a03-9226-24ff106b5041")), null,
+                //    ImmutableList.Create(
+                //        new KeyValuePair<string, string>("application", "tap-dotnet-web-mvc"),
+                //        new KeyValuePair<string, string>("service", "GetWeather"),
+                //        new KeyValuePair<string, string>("http.method", "GET")), null);
 
                 using (var handler = new HttpClientHandler())
                 {
@@ -54,7 +59,9 @@ namespace Tap.Dotnet.Web.Application
                         if (response.StatusCode == HttpStatusCode.OK)
                         {
                             var content = response.Content.ReadAsStringAsync().Result;
+
                             weatherInfo = JsonConvert.DeserializeObject<WeatherInfoViewModel>(content);
+                            weatherInfo.ZipCode = zipCode;
                         }
                     }
                 }

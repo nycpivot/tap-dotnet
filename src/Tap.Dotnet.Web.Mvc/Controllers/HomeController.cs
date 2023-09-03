@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Reflection.Emit;
 using Tap.Dotnet.Common.Interfaces;
 using Tap.Dotnet.Web.Application.Interfaces;
 using Tap.Dotnet.Web.Application.Models;
@@ -22,43 +23,35 @@ namespace Tap.Dotnet.Web.Mvc.Controllers
             this.logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(WeatherInfoViewModel model = null)
         {
-            var homeViewModel = this.weatherApplication.GetDefaultCriteria();
+            var weatherInfoViewModel = new WeatherInfoViewModel();
+
+            var zipCode = this.weatherApplication.GetDefaultCriteria().ZipCode;
 
             try
             {
-                var weatherInfoViewModel = this.weatherApplication.GetWeather(homeViewModel.ZipCode);
-
-                if (weatherInfoViewModel != null)
-                {
-                    if (weatherInfoViewModel.Forecast != null && weatherInfoViewModel.Forecast.Count == 5)
-                    {
-                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[0]);
-                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[1]);
-                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[2]);
-                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[3]);
-                        homeViewModel.WeatherForecast.Add(weatherInfoViewModel.Forecast[4]);
-                    }
-                }
+                weatherInfoViewModel = this.weatherApplication.GetWeather(zipCode);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Index", ex.StackTrace ?? ex.Message);
             }
 
-            return View(homeViewModel);
+            return View(weatherInfoViewModel);
         }
 
         [HttpPost]
-        public ActionResult Search(HomeViewModel model)
+        public ActionResult Search(WeatherInfoViewModel model)
         {
+            var weatherInfoViewModel = new WeatherInfoViewModel();
+
             if (ModelState.IsValid)
             {
-                //TODO: SubscribeUser(model.Email);
+                weatherInfoViewModel = this.weatherApplication.GetWeather(model.ZipCode);
             }
 
-            return View("Index", model);
+            return View("Index", weatherInfoViewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

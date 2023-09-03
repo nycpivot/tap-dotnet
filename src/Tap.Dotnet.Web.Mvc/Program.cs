@@ -7,11 +7,12 @@ using Wavefront.SDK.CSharp.DirectIngestion;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var defaultZipCode = Environment.GetEnvironmentVariable("DEFAULT_ZIP_CODE_ENV") ?? "10001";
 var serviceBindings = Environment.GetEnvironmentVariable("SERVICE_BINDING_ROOT") ?? String.Empty;
 
+// read environment variables
+var weatherApi = Environment.GetEnvironmentVariable("WEATHER_API") ?? String.Empty;
+
 // read secrets from files
-var weatherApi = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "weather-api", "host"));
 var wavefrontUrl = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "wavefront-api", "host"));
 var wavefrontToken = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "wavefront-api", "token"));
 var cacheHost = System.IO.File.ReadAllText(Path.Combine(serviceBindings, "cache-config", "host"));
@@ -27,7 +28,6 @@ var cacheDb = redisConnection.GetDatabase();
 
 var apiHelper = new ApiHelper()
 {
-    DefaultZipCode = defaultZipCode,
     WeatherApiUrl = weatherApi,
     WavefrontSender = wfSender,
     CacheDb = cacheDb
