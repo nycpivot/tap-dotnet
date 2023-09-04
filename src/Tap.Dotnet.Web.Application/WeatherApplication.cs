@@ -49,7 +49,7 @@ namespace Tap.Dotnet.Web.Application
                     {
                         var content = response.Content.ReadAsStringAsync().Result;
 
-                        homeViewModel = JsonConvert.DeserializeObject<HomeViewModel>(content);
+                        homeViewModel.Favorites = JsonConvert.DeserializeObject<IList<FavoriteViewModel>>(content);
                     }
                 }
             }
