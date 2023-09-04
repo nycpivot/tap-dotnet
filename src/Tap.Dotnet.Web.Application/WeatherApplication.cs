@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Immutable;
 using System.Net;
-using System.Reflection.Emit;
 using Tap.Dotnet.Common.Interfaces;
 using Tap.Dotnet.Web.Application.Interfaces;
 using Tap.Dotnet.Web.Application.Models;
@@ -17,7 +15,7 @@ namespace Tap.Dotnet.Web.Application
             this.apiHelper = apiHelper;
         }
 
-        public HomeViewModel GetFavorites()
+        public HomeViewModel GetForecast(string zipCode)
         {
             var homeViewModel = new HomeViewModel();
 
@@ -44,12 +42,22 @@ namespace Tap.Dotnet.Web.Application
                     httpClient.BaseAddress = new Uri(this.apiHelper.WeatherApi);
                     httpClient.DefaultRequestHeaders.Add("X-TraceId", traceId.ToString());
 
-                    var response = httpClient.GetAsync($"favorites").Result;
-                    if (response.StatusCode == HttpStatusCode.OK)
+                    // get saved favorite zip codes
+                    var favoritesResponse = httpClient.GetAsync("favorites").Result;
+                    if(favoritesResponse.StatusCode == HttpStatusCode.OK)
                     {
-                        var content = response.Content.ReadAsStringAsync().Result;
-
+                        var content = favoritesResponse.Content.ReadAsStringAsync().Result;
                         homeViewModel.Favorites = JsonConvert.DeserializeObject<IList<FavoriteViewModel>>(content);
+                    }
+
+                    // get weather forecast for incoming zip code
+                    var forecastResponse = httpClient.GetAsync($"forecast/{zipCode}").Result;
+                    if (forecastResponse.StatusCode == HttpStatusCode.OK)
+                    {
+                        var content = forecastResponse.Content.ReadAsStringAsync().Result;
+
+                        homeViewModel.WeatherInfo = JsonConvert.DeserializeObject<WeatherInfoViewModel>(content);
+                        homeViewModel.WeatherInfo.ZipCode = zipCode;
                     }
                 }
             }
@@ -57,15 +65,8 @@ namespace Tap.Dotnet.Web.Application
             return homeViewModel;
         }
 
-        public WeatherInfoViewModel SaveFavorite(string zipCode)
+        public void SaveFavorite(string zipCode)
         {
-            throw new NotImplementedException();
-        }
-
-        public WeatherInfoViewModel GetWeather(string zipCode)
-        {
-            var weatherInfo = new WeatherInfoViewModel();
-
             var traceId = Guid.NewGuid();
             var spanId = Guid.NewGuid();
 
@@ -89,18 +90,9 @@ namespace Tap.Dotnet.Web.Application
                     httpClient.BaseAddress = new Uri(this.apiHelper.WeatherApi);
                     httpClient.DefaultRequestHeaders.Add("X-TraceId", traceId.ToString());
 
-                    var response = httpClient.GetAsync($"forecast/{zipCode}").Result;
-                    if (response.StatusCode == HttpStatusCode.OK)
-                    {
-                        var content = response.Content.ReadAsStringAsync().Result;
-
-                        weatherInfo = JsonConvert.DeserializeObject<WeatherInfoViewModel>(content);
-                        weatherInfo.ZipCode = zipCode;
-                    }
+                    httpClient.GetAsync($"favorites?zipCode={zipCode}");
                 }
             }
-
-            return weatherInfo;
         }
     }
 }

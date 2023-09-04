@@ -22,41 +22,35 @@ namespace Tap.Dotnet.Web.Mvc.Controllers
             this.logger = logger;
         }
 
-        public IActionResult Index(WeatherInfoViewModel model)
+        public IActionResult Index(HomeViewModel model)
         {
-            var weatherInfoViewModel = new WeatherInfoViewModel();
+            var homeViewModel = this.weatherApplication.GetForecast(model.WeatherInfo.ZipCode);
 
-            ViewBag.Favorites = this.weatherApplication.GetFavorites();
-            
-            weatherInfoViewModel = this.weatherApplication.GetWeather(model.ZipCode);
-
-            return View(weatherInfoViewModel);
+            return View(homeViewModel);
         }
 
         [HttpPost]
-        public ActionResult Search(WeatherInfoViewModel model)
+        public ActionResult Search(HomeViewModel model)
         {
-            var weatherInfoViewModel = new WeatherInfoViewModel();
+            var homeViewModel = new HomeViewModel();
 
             if (ModelState.IsValid)
             {
-                weatherInfoViewModel = this.weatherApplication.GetWeather(model.ZipCode);
+                homeViewModel = this.weatherApplication.GetForecast(model.WeatherInfo.ZipCode);
             }
 
-            return View("Index", weatherInfoViewModel);
+            return View("Index", homeViewModel);
         }
 
         [HttpPost]
-        public ActionResult Save(WeatherInfoViewModel model)
+        public ActionResult Save(HomeViewModel model)
         {
-            var weatherInfoViewModel = new WeatherInfoViewModel();
-
             if (ModelState.IsValid)
             {
-                weatherInfoViewModel = this.weatherApplication.GetWeather(model.ZipCode);
+                this.weatherApplication.SaveFavorite(model.WeatherInfo.ZipCode);
             }
 
-            return View("Index", weatherInfoViewModel);
+            return View("Index", model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

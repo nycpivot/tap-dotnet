@@ -2,6 +2,7 @@
 {
     public class HomeViewModel
     {
+        public WeatherInfoViewModel WeatherInfo { get; set; } = new WeatherInfoViewModel();
         public IList<FavoriteViewModel> Favorites { get; set; } = new List<FavoriteViewModel>();
     }
 }

@@ -4,8 +4,7 @@ namespace Tap.Dotnet.Web.Application.Interfaces
 {
     public interface IWeatherApplication
     {
-        HomeViewModel GetFavorites();
-        WeatherInfoViewModel SaveFavorite(string zipCode);
-        WeatherInfoViewModel GetWeather(string zipCode);
+        HomeViewModel GetForecast(string zipCode);
+        void SaveFavorite(string zipCode);
     }
 }

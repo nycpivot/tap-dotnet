@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
-using System.Reflection.Emit;
 using Tap.Dotnet.Common.Interfaces;
 using Tap.Dotnet.Domain;
-using WeatherBit.Domain;
 
 namespace Tap.Dotnet.Api.Weather.Controllers
 {
@@ -54,6 +52,27 @@ namespace Tap.Dotnet.Api.Weather.Controllers
             }
 
             return favorites;
+        }
+
+        [HttpGet]
+        public void Save(string zipCode)
+        {
+            var favorites = new List<Favorite>();
+
+            using (var handler = new HttpClientHandler())
+            {
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+                {
+                    return true;
+                };
+
+                using (var httpClient = new HttpClient(handler))
+                {
+                    httpClient.BaseAddress = new Uri(this.apiHelper.WeatherDbApi);
+
+                    httpClient.GetAsync($"favorites?zipCode={zipCode}");
+                }
+            }
         }
     }
 }
