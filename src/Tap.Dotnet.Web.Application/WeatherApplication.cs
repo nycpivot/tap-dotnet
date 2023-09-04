@@ -41,7 +41,7 @@ namespace Tap.Dotnet.Web.Application
 
                 using (var httpClient = new HttpClient(handler))
                 {
-                    httpClient.BaseAddress = new Uri(this.apiHelper.WeatherDbApi);
+                    httpClient.BaseAddress = new Uri(this.apiHelper.WeatherApi);
                     httpClient.DefaultRequestHeaders.Add("X-TraceId", traceId.ToString());
 
                     var response = httpClient.GetAsync($"favorites").Result;
