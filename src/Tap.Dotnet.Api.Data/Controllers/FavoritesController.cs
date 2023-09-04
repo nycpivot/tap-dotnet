@@ -21,6 +21,7 @@ namespace Tap.Dotnet.Api.Data.Controllers
             this.logger = logger;
         }
 
+        [HttpGet]
         public IEnumerable<Favorite> Get()
         {
             var favorites = this.weatherDb.Favorites;
@@ -28,6 +29,7 @@ namespace Tap.Dotnet.Api.Data.Controllers
             return favorites;
         }
 
+        [HttpPost]
         public Favorite Post(Favorite favorite)
         {
             var fave = this.weatherDb.Favorites.Add(favorite);
