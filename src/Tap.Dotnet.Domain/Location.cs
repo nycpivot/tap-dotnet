@@ -1,7 +1,10 @@
-﻿namespace Tap.Dotnet.Domain
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Tap.Dotnet.Domain
 {
     public class Location
     {
+        [Key]
         public string ZipCode { get; set; } = String.Empty;
         public string Latitude { get; set; } = String.Empty;
         public string Longitude { get; set; } = String.Empty;
