@@ -21,6 +21,7 @@ namespace Tap.Dotnet.Api.Data.Controllers
             this.logger = logger;
         }
 
+        [HttpGet]
         public IEnumerable<Favorite> Get()
         {
             var favorites = this.weatherDb.Favorites;
@@ -29,6 +30,7 @@ namespace Tap.Dotnet.Api.Data.Controllers
         }
 
         [HttpGet]
+        [Route("{zipCode}")]
         public void Save(string zipCode)
         {
             var favorite = new Favorite();

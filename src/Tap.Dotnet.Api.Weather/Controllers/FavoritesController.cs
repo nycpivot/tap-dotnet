@@ -19,6 +19,7 @@ namespace Tap.Dotnet.Api.Weather.Controllers
             this.logger = logger;
         }
 
+        [HttpGet]
         public IEnumerable<Favorite> Get()
         {
             var favorites = new List<Favorite>();
@@ -55,6 +56,7 @@ namespace Tap.Dotnet.Api.Weather.Controllers
         }
 
         [HttpGet]
+        [Route("{zipCode}")]
         public void Save(string zipCode)
         {
             var favorites = new List<Favorite>();
@@ -70,7 +72,7 @@ namespace Tap.Dotnet.Api.Weather.Controllers
                 {
                     httpClient.BaseAddress = new Uri(this.apiHelper.WeatherDbApi);
 
-                    httpClient.GetAsync($"favorites?zipCode={zipCode}");
+                    var result = httpClient.GetAsync($"favorites/{zipCode}").Result;
                 }
             }
         }

@@ -9,15 +9,15 @@ namespace Tap.Dotnet.Api.Data
     {
         public WeatherDb(DbContextOptions<WeatherDb> options) : base(options)
         {
-            var dbCreator = (RelationalDatabaseCreator)this.Database.GetService<IDatabaseCreator>();
+            //var dbCreator = (RelationalDatabaseCreator)this.Database.GetService<IDatabaseCreator>();
 
-            if (!dbCreator.HasTables())
-            {
-                dbCreator.CreateTables();
-            }
+            //if (!dbCreator.HasTables())
+            //{
+            //    dbCreator.CreateTables();
+            //}
         }
 
         public DbSet<Favorite> Favorites { get; set; }
-        public DbSet<Location> Locations { get; set; }
+        //public DbSet<Location> Locations { get; set; }
     }
 }
